@@ -274,10 +274,12 @@ public class Recognizer extends JFrame implements ActionListener {
     }
 
     public String beatufulFormatter(String result, String imagePath) {
+        String[] vectorResult = result.split("\\s+");
         String resultFinal = new String();
         resultFinal += imagePath;
-        resultFinal += " " + result;
+        resultFinal += " " + vectorResult[0];
         resultFinal += " " + "-1" + " " + "-1";
+        resultFinal += " " + vectorResult[1];
         return  resultFinal;
     }
 
