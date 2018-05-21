@@ -278,8 +278,9 @@ public class Recognizer extends JFrame implements ActionListener {
         String resultFinal = new String();
         resultFinal += imagePath;
         resultFinal += " " + vectorResult[0];
-        resultFinal += " " + "-1" + " " + "-1";
+        resultFinal += " " + "-1" + " " + "-1" + " " + "-1";
         resultFinal += " " + vectorResult[1];
+        resultFinal += " " + "-1" + " " + "-1";
         return  resultFinal;
     }
 

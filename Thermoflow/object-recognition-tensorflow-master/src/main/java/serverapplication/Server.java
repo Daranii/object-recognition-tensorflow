@@ -40,7 +40,7 @@ public class Server {
 	
     public void stop() throws IOException {
         this.running = false;
-    }	
+    }
 
     private void init() {
         try {
