@@ -273,6 +273,13 @@ public class Recognizer extends JFrame implements ActionListener {
         });
     }
 
+    public String beatufulFormatter(String result, String imagePath) {
+        String resultFinal = new String();
+        resultFinal += imagePath;
+        resultFinal += " " + result;
+        resultFinal += " " + "-1" + " " + "-1";
+        return  resultFinal;
+    }
 
     public String analyse(String imagePath)
     {
@@ -290,9 +297,9 @@ public class Recognizer extends JFrame implements ActionListener {
                 
                 
                 String concept=String.format(
-                                "BEST MATCH: %s (%.2f%% likely)",
+                                "%s %.2f%%",
                                 labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f);
-                
+                concept = beatufulFormatter(concept, imagePath);
                 return concept;
             }
     }
