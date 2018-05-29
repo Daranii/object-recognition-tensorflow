@@ -76,7 +76,7 @@ public class Recognizer extends JFrame implements ActionListener {
         imgch = new JFileChooser();
         imgch.setFileFilter(imgfilter);
         imgch.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        
+
         result=new JTextField();
         modelpth=new JTextField();
         imgpth=new JTextField();
@@ -96,9 +96,9 @@ public class Recognizer extends JFrame implements ActionListener {
         table.addCell(result).width(300).colspan(2);
         table.row();
         table.addCell(new JLabel("By: Taha Emara")).center().padTop(30).colspan(2);
-       table.row();
+        table.row();
         table.addCell(new JLabel("Email: taha@emaraic.com")).center().colspan(2);
-       
+
         setLocationRelativeTo(null);
 
         setResizable(false);
@@ -149,8 +149,8 @@ public class Recognizer extends JFrame implements ActionListener {
                 int bestLabelIdx = maxIndex(labelProbabilities);
                 result.setText("");
                 result.setText(String.format(
-                                "BEST MATCH: %s (%.2f%% likely)",
-                                labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f));
+                        "BEST MATCH: %s (%.2f%% likely)",
+                        labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f));
                 System.out.println(
                         String.format(
                                 "BEST MATCH: %s (%.2f%% likely)",
@@ -165,7 +165,7 @@ public class Recognizer extends JFrame implements ActionListener {
         try (Graph g = new Graph()) {
             g.importGraphDef(graphDef);
             try (Session s = new Session(g);
-                    Tensor result = s.runner().feed("DecodeJpeg/contents", image).fetch("softmax").run().get(0)) {
+                 Tensor result = s.runner().feed("DecodeJpeg/contents", image).fetch("softmax").run().get(0)) {
                 final long[] rshape = result.shape();
                 if (result.numDimensions() != 2 || rshape[0] != 1) {
                     throw new RuntimeException(
@@ -273,4 +273,37 @@ public class Recognizer extends JFrame implements ActionListener {
         });
     }
 
+    public String beatufulFormatter(String result, String imagePath) {
+        String[] vectorResult = result.split("\\s+");
+        String resultFinal = new String();
+        resultFinal += imagePath;
+        resultFinal += " " + vectorResult[0];
+        resultFinal += " " + "-1" + " " + "-1" + " " + "-1";
+        resultFinal += " " + vectorResult[1];
+        resultFinal += " " + "-1" + " " + "-1";
+        return  resultFinal;
+    }
+
+    public String analyse(String imagePath)
+    {
+         String modelpath = pathToInception;
+         modelselected = true;
+         graphDef = readAllBytesOrExit(Paths.get(modelpath, "tensorflow_inception_graph.pb"));
+         labels = readAllLinesOrExit(Paths.get(modelpath, "imagenet_comp_graph_label_strings.txt"));
+         
+         byte[] imageBytes = readAllBytesOrExit(Paths.get(imagePath));
+         
+         
+         try (Tensor image = Tensor.create(imageBytes)) {
+                float[] labelProbabilities = executeInceptionGraph(graphDef, image);
+                int bestLabelIdx = maxIndex(labelProbabilities);
+                
+                
+                String concept=String.format(
+                                "%s %.2f%%",
+                                labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f);
+                concept = beatufulFormatter(concept, imagePath);
+                return concept;
+            }
+    }
 }
